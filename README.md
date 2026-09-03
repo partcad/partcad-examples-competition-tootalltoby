@@ -1,4 +1,4 @@
-# /pub/examples/competition/tootalltobby
+# //pub/examples/competition/tootalltobby
 
 Too Tall Tobby competition models.
 
