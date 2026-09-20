@@ -2,17 +2,61 @@
 
 Too Tall Tobby competition models.
 
-This package contains a subset of practice models from the Too Tall Tobby competition.
-The models are provided in the form of images, and PartCAD AI features are used
-to reconstruct the 3D models from the images.
-The models are not yet ejected from the initial AI configuration, so you
-can use your own AI API keys to tweak the input data as well as the prompts to
-regenerate the scripts.
-You can also easily change the PartCAD configuration
-to generate OpenSCAD or build123d scripts instead of CadQuery ones.
+This package holds a selection of the practice models from the
+[Too Tall Toby](https://www.tootalltoby.com/practice/) competition. Each of those
+models is published as a technical drawing and one or two rendered views, and as
+nothing else: there is no CAD file to import, and no dimension in machine-readable
+form. Reading the drawing and building the solid is the whole exercise.
 
-For the best experience, open this repository in a Visual Studio Code workspace with the
-[PartCAD vscode extension](https://marketplace.visualstudio.com/items?itemName=OpenVMP.partcad)
+Every part here was modelled from those images with the `pc:gen-part` skill that
+PartCAD ships for AI coding agents. The skill is a procedure rather than a
+generator: the agent reads the drawing and the rendered views, writes a
+[build123d](https://build123d.readthedocs.io/) script by hand, proves the geometry
+with `pc test`, renders the part from four directions, and compares those renders
+against the drawing -- dimension by dimension and feature by feature -- before
+fixing whatever does not match and going round again.
+
+What is checked in is the outcome of that loop: ordinary PartCAD parts. Each script
+is plain `build123d` with the drawing's own dimensions at the top as named
+constants, so a dimension that changes is one line to edit and `pc render` to see.
+They build with no AI provider, no API key and no network access -- PartCAD treats
+them like any other part, and so can you.
+
+Each model is checked in with what it was built from. For `tier01-24-01-01`, say:
+`input-24-01-01-blueprint.png` is the technical drawing, `input-24-01-01-render1.png`
+and `input-24-01-01-render2.png` are the rendered views published with it, and
+`input-24-01-01.jpg` is the whole practice sheet -- title block, material, and the
+question the competition actually asks, which is the mass of the part. `pc info`
+prints the volume of the model; multiply by the density on the sheet and you have an
+answer to compare against.
+
+## Building the parts
+
+```shell
+pc install          # fetch what the package depends on
+pc test             # every part instantiates as a solid
+pc render           # re-render the images and this README
+pc inspect tier01-24-01-01
+```
+
+## Modelling one yourself
+
+The skill comes with PartCAD. In [Claude Code](https://claude.ai/code):
+
+```text
+/plugin marketplace add partcad/partcad@plugin-dist
+/plugin install pc@partcad
+/pc:gen-part model the attached drawing of a bracket
+```
+
+Any agent that reads `SKILL.md` folders can use the same skills; `pc init` installs
+them into a package it creates. See
+[ai-agents](https://github.com/partcad/partcad/tree/main/ai-agents) for the full
+set -- `/pc:gen-part` for a part, `/pc:gen-sketch`, `/pc:gen-assembly`,
+`/pc:add-interfaces`, `/pc:render` and the rest.
+
+For the best experience, open this repository in a Visual Studio Code workspace with
+the [PartCAD extension](https://marketplace.visualstudio.com/items?itemName=PartCAD.partcad-official)
 installed.
 
 
@@ -20,16 +64,9 @@ installed.
 
 ### tier01-24-01-01
 <table><tr>
-<td valign=top><a href="tier01-24-01-01.py"><img src="././tier01-24-01-01.svg" style="width: auto; height: auto; max-width: 200px; max-height: 200px;"></a></td>
-<td valign=top>The attached images depict a single solid object.
-
-The first image is a technical drawing showing the object's
-projections onto the three coordinate planes (XY, XZ, and YZ).
-INSERT_IMAGE_HERE(input-24-01-01-blueprint.png)
-
-The other two images are rendered views of the object from different perspectives:
-INSERT_IMAGE_HERE(input-24-01-01-render1.png)
-INSERT_IMAGE_HERE(input-24-01-01-render2.png)
+<td valign=top><a href="tier01-24-01-01.py"><img src="././tier01-24-01-01.svg" alt="tier01-24-01-01" style="width: auto; height: auto; max-width: 200px; max-height: 200px;"></a></td>
+<td valign=top>An L-shaped bracket, 65 x 29 x 62 mm. A 15 mm base plate ends in a half circle
+of R14.5 across its full width, and a 30 mm leg stands on the square end of it.
 </td>
 <td valign=top>Input images:
 </br><img src="input-24-01-01-blueprint.png" alt="input-24-01-01-blueprint.png" style="width: auto; height: auto; max-width: 200px; max-height: 200px;" />
@@ -40,16 +77,11 @@ INSERT_IMAGE_HERE(input-24-01-01-render2.png)
 
 ### tier01-24-04-02
 <table><tr>
-<td valign=top><a href="tier01-24-04-02.py"><img src="././tier01-24-04-02.svg" style="width: auto; height: auto; max-width: 200px; max-height: 200px;"></a></td>
-<td valign=top>The attached images depict a single solid object.
-
-The first image is a technical drawing showing the object's
-projections onto the three coordinate planes (XY, XZ, and YZ):
-INSERT_IMAGE_HERE(input-24-04-02-blueprint.png)
-
-The remaining two images are rendered views of the object from different perspectives:
-INSERT_IMAGE_HERE(input-24-04-02-render1.png)
-INSERT_IMAGE_HERE(input-24-04-02-render2.png)
+<td valign=top><a href="tier01-24-04-02.py"><img src="././tier01-24-04-02.svg" alt="tier01-24-04-02" style="width: auto; height: auto; max-width: 200px; max-height: 200px;"></a></td>
+<td valign=top>A plumb bob, 1.5 inches across and 3.5 inches long (the drawing is in inches; the
+model is in millimeters). A cylinder chamfered 135 degrees down to a 1 inch flat
+on top, tapering through a 33 degree cone to a 0.375 inch tip, with a 0.5 inch
+hole across it 0.75 inch below the top.
 </td>
 <td valign=top>Input images:
 </br><img src="input-24-04-02-blueprint.png" alt="input-24-04-02-blueprint.png" style="width: auto; height: auto; max-width: 200px; max-height: 200px;" />
@@ -60,16 +92,11 @@ INSERT_IMAGE_HERE(input-24-04-02-render2.png)
 
 ### tier01-24-04-04
 <table><tr>
-<td valign=top><a href="tier01-24-04-04.py"><img src="././tier01-24-04-04.svg" style="width: auto; height: auto; max-width: 200px; max-height: 200px;"></a></td>
-<td valign=top>The attached images depict a single solid object.
-
-The first image is a technical drawing showing the object's
-projections onto the three coordinate planes (XY, XZ, and YZ):
-INSERT_IMAGE_HERE(input-24-04-04-blueprint.png)
-
-The remaining two images are rendered views of the object from different perspectives:
-INSERT_IMAGE_HERE(input-24-04-04-render1.png)
-INSERT_IMAGE_HERE(input-24-04-04-render2.png)
+<td valign=top><a href="tier01-24-04-04.py"><img src="././tier01-24-04-04.svg" alt="tier01-24-04-04" style="width: auto; height: auto; max-width: 200px; max-height: 200px;"></a></td>
+<td valign=top>A cabinet pull, 10 x 0.75 inches (the drawing is in inches; the model is in
+millimeters). The top is a single R18 inch arc from one end face to the other,
+the 4 inch opening under it is filleted R0.75, and every edge running along the
+bar is broken R0.1875.
 </td>
 <td valign=top>Input images:
 </br><img src="input-24-04-04-blueprint.png" alt="input-24-04-04-blueprint.png" style="width: auto; height: auto; max-width: 200px; max-height: 200px;" />
@@ -80,16 +107,11 @@ INSERT_IMAGE_HERE(input-24-04-04-render2.png)
 
 ### tier03-24-01-03
 <table><tr>
-<td valign=top><a href="tier03-24-01-03.py"><img src="././tier03-24-01-03.svg" style="width: auto; height: auto; max-width: 200px; max-height: 200px;"></a></td>
-<td valign=top>The attached images depict a single solid object.
-
-The first image is a technical drawing showing the object's
-projections onto the three coordinate planes (XY, XZ, and YZ):
-INSERT_IMAGE_HERE(input-24-01-03-blueprint.png)
-
-The remaining two images are rendered views of the object from different perspectives:
-INSERT_IMAGE_HERE(input-24-01-03-render1.png)
-INSERT_IMAGE_HERE(input-24-01-03-render2.png)
+<td valign=top><a href="tier03-24-01-03.py"><img src="././tier03-24-01-03.svg" alt="tier03-24-01-03" style="width: auto; height: auto; max-width: 200px; max-height: 200px;"></a></td>
+<td valign=top>A molded cup, 50 mm across and 55 mm tall. The 4 mm wall is drafted 3 degrees on
+the inside and filleted R4 where the 42 mm deep cavity closes; an elliptical dome
+caps it, and a handle of constant 6 x 12 mm elliptical section is swept out to
+34 mm from the axis.
 </td>
 <td valign=top>Input images:
 </br><img src="input-24-01-03-blueprint.png" alt="input-24-01-03-blueprint.png" style="width: auto; height: auto; max-width: 200px; max-height: 200px;" />
@@ -100,15 +122,10 @@ INSERT_IMAGE_HERE(input-24-01-03-render2.png)
 
 ### tier03-24-01-04
 <table><tr>
-<td valign=top><a href="tier03-24-01-04.py"><img src="././tier03-24-01-04.svg" style="width: auto; height: auto; max-width: 200px; max-height: 200px;"></a></td>
-<td valign=top>The attached images depict a single solid object.
-
-The first image is a technical drawing showing the object's
-projections onto the three coordinate planes (XY, XZ, and YZ):
-INSERT_IMAGE_HERE(input-24-01-04-blueprint.png)
-
-The second image is a rendered view of the object from a perspective:
-INSERT_IMAGE_HERE(input-24-01-04-render1.png)
+<td valign=top><a href="tier03-24-01-04.py"><img src="././tier03-24-01-04.svg" alt="tier03-24-01-04" style="width: auto; height: auto; max-width: 200px; max-height: 200px;"></a></td>
+<td valign=top>An offset handle, 109 x 18 x 41 mm. An 18 mm bar is bent into a U with R20 under
+the legs and R7 inside the corners, and one leg carries a 18 mm boss, bored 8 mm
+along the bar and overhanging its back by 11 mm.
 </td>
 <td valign=top>Input images:
 </br><img src="input-24-01-04-blueprint.png" alt="input-24-01-04-blueprint.png" style="width: auto; height: auto; max-width: 200px; max-height: 200px;" />
@@ -118,15 +135,11 @@ INSERT_IMAGE_HERE(input-24-01-04-render1.png)
 
 ### tier04-24-01-02
 <table><tr>
-<td valign=top><a href="tier04-24-01-02.py"><img src="././tier04-24-01-02.svg" style="width: auto; height: auto; max-width: 200px; max-height: 200px;"></a></td>
-<td valign=top>The attached images depict a single solid object.
-The first image is a technical drawing showing the object's
-projections onto the three coordinate planes (XY, XZ, and YZ):
-INSERT_IMAGE_HERE(input-24-01-02-blueprint.png)
-
-The remaining two images are rendered views of the object from different perspectives:
-INSERT_IMAGE_HERE(input-24-01-02-render1.png)
-INSERT_IMAGE_HERE(input-24-01-02-render2.png)
+<td valign=top><a href="tier04-24-01-02.py"><img src="././tier04-24-01-02.svg" alt="tier04-24-01-02" style="width: auto; height: auto; max-width: 200px; max-height: 200px;"></a></td>
+<td valign=top>A clevis bracket, 118 x 54 x 69.5 mm. The base plate is 16 mm thick with R6
+corners, a 16 x 99 mm slot through it and a 60 degree dovetail groove along its
+underside; the two 14 mm ears on top are bored 30 mm with a 38 x 4 mm
+counterbore in each outer face, and run into the plate through an R12 fillet.
 </td>
 <td valign=top>Input images:
 </br><img src="input-24-01-02-blueprint.png" alt="input-24-01-02-blueprint.png" style="width: auto; height: auto; max-width: 200px; max-height: 200px;" />
