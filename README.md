@@ -12,9 +12,9 @@ Every part here was modelled from those images with the `pc:gen-part` skill that
 PartCAD ships for AI coding agents. The skill is a procedure rather than a
 generator: the agent reads the drawing and the rendered views, writes a
 [build123d](https://build123d.readthedocs.io/) script by hand, proves the geometry
-with `pc test`, renders the part from four directions, and compares those renders
-against the drawing -- dimension by dimension and feature by feature -- before
-fixing whatever does not match and going round again.
+with `pc qual test`, renders the part from four directions, and compares those
+renders against the drawing -- dimension by dimension and feature by feature --
+before fixing whatever does not match and going round again.
 
 What is checked in is the outcome of that loop: ordinary PartCAD parts. Each script
 is plain `build123d` with the drawing's own dimensions at the top as named
@@ -34,7 +34,7 @@ answer to compare against.
 
 ```shell
 pc install          # fetch what the package depends on
-pc test             # every part instantiates as a solid
+pc qual test        # every part instantiates as a solid
 pc render           # re-render the images and this README
 pc inspect tier01-24-01-01
 ```
